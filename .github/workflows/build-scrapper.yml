@@ -1,0 +1,52 @@
+
+name: Build scrapper for macOS ARM64
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify architecture
+        run: |
+          uname -m
+          sw_vers
+
+      - name: Setup Conda build environment
+        uses: mamba-org/setup-micromamba@v3
+        with:
+          environment-name: builder
+          create-args: >-
+            python=3.12
+            conda-build
+          condarc: |
+            channels:
+              - conda-forge
+              - bioconda
+            channel_priority: strict
+
+      - name: Build scrapper
+        shell: bash -el {0}
+        run: |
+          conda build recipes/bioconductor-scrapper \
+            --R 4.5 \
+            -c conda-forge \
+            -c bioconda \
+            --output-folder "$GITHUB_WORKSPACE/conda-bld"
+
+      - name: Upload Conda package
+        uses: actions/upload-artifact@v4
+        with:
+          name: scrapper-osx-arm64
+          path: |
+            conda-bld/osx-arm64/*.conda
+            conda-bld/osx-arm64/*.tar.bz2
+          if-no-files-found: error
