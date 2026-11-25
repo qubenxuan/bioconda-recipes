@@ -15,7 +15,7 @@ source:
   md5: 40e0127fb2a456d8ace5e092eb8f41ec
 
 build:
-  number: 0
+  number: 1
   rpaths:
     - lib/R/lib/
     - lib/
@@ -65,3 +65,6 @@ about:
   description: Implements R bindings to C++ code for analyzing single-cell (expression) data, mostly from various libscran libraries. Each function performs an individual step in the single-cell analysis workflow, ranging from quality control to clustering and marker detection. It is mostly intended for other Bioconductor package developers to build more user-friendly end-to-end workflows.
   license_file: LICENSE
 
+extra:
+  additional-platforms:
+    - osx-arm64
